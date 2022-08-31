@@ -1,4 +1,4 @@
-@extends('item/layouts/main')
+@extends('layouts/main')
 
 {{-- @section('title'){{ 'Edit Barang' }} @endsection --}}
 
@@ -9,10 +9,17 @@
                 <form action="{{ route("home.update", $item->id) }}" method="post">
                     @csrf
                     @method('PUT')
-                    <form>
                         <div class="mb-3">
                           <label for="exampleInputEmail1" class="form-label">Kode Barang</label>
                           <input class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="kode" value="{{ $item -> kode_barang }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="itemType">Jenis Barang</label>
+                            <select class="form-select form-select-sm" id="itemType" name="item_type" aria-label=".form-select-sm example">
+                                @foreach($itemTypes as $itemType)
+                                <option value={{ $itemType -> id }} {{ $itemType -> id == $item -> item_type_id ? "selected":"" }}>{{ $itemType-> name }}</option>
+                                @endforeach
+                              </select>
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Nama Barang</label>
@@ -30,7 +37,7 @@
                             <a href="/home" type="button" class="btn btn-outline-secondary btn-lg">Cancel</a>
                             <button type="submit" class="btn btn-primary float-end btn-lg">Submit</button>
                         </div>
-                      </form>
+                      
                 </form>
             </div>
           </div>

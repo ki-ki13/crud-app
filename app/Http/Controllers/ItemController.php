@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\Item_type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class ItemController extends Controller
 {
@@ -14,15 +16,33 @@ class ItemController extends Controller
      */
     public function index(Request $request)
     {
-        
         if($request -> get('status') == 'archived'){
-            $items = Item::onlyTrashed()->get();
+            $items = Item::onlyTrashed()->paginate(5);
         }else{
-            $items = Item::get();
+            // $items = Item::paginate(10);
+            $items = Item::with("itemTypes")->paginate(5);
         }
-        $title = "Dashboard";
+        
+    
 
-        return view('item.index', compact('items','title'));
+        // $items = Item::with('itemTypes')->paginate(2);
+        // innerjoin
+        // $items = \DB::table('item')
+        //             ->join('item_types','item.item_type_id', '=' , 'item_types.id')
+        //             ->select('item.*', 'item_types.name as tipe')
+        //             ->paginate(10);
+
+        // $items = \DB::table('item')
+        //             ->join('item_types','item.item_type_id', '=' , 'item_types.id')
+        //             ->select(\DB::raw('item.id,item.kode_barang, item.nama_barang, item.stock, item.harga, item_types.name as jenis, (item.stock * item.harga) as total_aset'))
+        //             ->orderBy('total_aset','desc')
+        //             ->paginate(10);
+        
+        
+        $columns = ['Kode Barang', 'Nama Barang','Tipe', 'Stock', 'Harga','Total Aset'];
+        $title = "Barang";
+
+        return view('item.index', compact('items','title','columns'));
     }
 
     /**
@@ -33,7 +53,8 @@ class ItemController extends Controller
     public function create()
     {
         $title = "Tambah Barang";
-        return view('item.create',compact('title'));
+        $items = Item_type::get();
+        return view('item.create',compact('title','items'));
     }
 
     /**
@@ -45,6 +66,7 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         $items = Item::create([
+            'item_type_id' => $request -> item_type,
             "kode_barang" => $request -> kode,
             "nama_barang" => $request -> nama,
             "stock" => $request -> stock,
@@ -73,8 +95,9 @@ class ItemController extends Controller
     public function edit($home)
     {
         $item = Item::findorfail($home);
+        $itemTypes = Item_type::get();
         $title = "Edit Barang";
-        return view('item.edit',compact('item','title'));
+        return view('item.edit',compact('item','title','itemTypes'));
     }
 
     /**
@@ -88,6 +111,7 @@ class ItemController extends Controller
     {
         $item = Item::findorfail($home);
         $item -> update([
+            "item_type_id" => $request -> item_type ?? $item -> item_type,
             "kode_barang" => $request -> kode ?? $item -> kode,
             "nama_barang" => $request -> nama ?? $item -> nama,
             "stock" => $request -> stock ?? $item -> stock,

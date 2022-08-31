@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\ItemTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,3 +31,8 @@ Route::resource('/home', ItemController::class);
 Route::post('/home/restore-all', [ItemController::class,'restoreAll'])->name('home.restore-all');
 Route::post('/home/{home}/restore', [ItemController::class,'restore'])->name('home.restore');
 Route::delete('/home/{home}/force-del', [ItemController::class,'forceDelete'])->name('home.fdel');
+
+Route::resource('/tipe', ItemTypeController::class);
+Route::post('/tipe/restore-all', [ItemTypeController::class,'restoreAll'])->name('tipe.restore-all');
+Route::post('/tipe/{tipe}/restore', [ItemTypeController::class,'restore'])->name('tipe.restore');
+Route::delete('/tipe/{tipe}/force-del', [ItemTypeController::class,'forceDelete'])->name('tipe.fdel');

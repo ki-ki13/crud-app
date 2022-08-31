@@ -12,5 +12,13 @@ class Item extends Model
 
     use SoftDeletes;
     protected $table = 'item';
-    protected $fillable =['kode_barang','nama_barang','stock','harga'];
+    protected $fillable =['kode_barang','nama_barang','stock','harga','item_type_id'];
+
+
+
+    public function itemTypes()
+    {
+        return $this->belongsTo(Item_type::class,"item_type_id");
+    }
+
 }

@@ -1,4 +1,4 @@
-@extends('item/layouts/main')
+@extends('layouts/main')
 
 {{-- @section('title'){{ 'Tambah Barang' }} @endsection --}}
 
@@ -8,7 +8,14 @@
                 <h5 class="card-title mb-4 text-center">Form Tambah Data</h5>
                 <form action="{{ route("home.store") }}" method="post">
                     @csrf
-                    <form>
+                        <div class="mb-3">
+                            <label for="itemType">Jenis Barang</label>
+                            <select class="form-select form-select-sm" id="itemType" name="item_type" aria-label=".form-select-sm example">
+                                @foreach($items as $itemType)
+                                <option value={{ $itemType -> id }}>{{ $itemType-> name }}</option>
+                                @endforeach
+                              </select>
+                        </div>
                         <div class="mb-3">
                           <label for="exampleInputEmail1" class="form-label">Kode Barang</label>
                           <input class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="kode" placeholder="Masukkan kode barang">
@@ -29,7 +36,6 @@
                             <a href="/home" type="button" class="btn btn-outline-secondary btn-lg">Cancel</a>
                             <button type="submit" class="btn btn-primary float-end btn-lg">Submit</button>
                         </div>
-                      </form>
                 </form>
             </div>
           </div>

@@ -1,21 +1,29 @@
-@extends('item/layouts/main')
+@extends('layouts/main')
 
 {{-- @section('title'){{ 'Dashboard' }} @endsection --}}
 
 @section('container')
-<h3 class="text-primary">Dashboard</h3>
 <div class="row">
-  <div>
+  <div class="col-6">
+      <div class="col-lg">
+        <div class="input-group">
+          <select class="form-select" id="itemType" name="item_type" aria-label=".form-select-sm example">
+            @foreach($columns as $column)
+            <option value= {{ $column ?  $column:"" }}>{{ $column }}</option>
+            @endforeach
+          </select>
+          <input class="form-control" style="width:10rem" id="exampleInputEmail1" aria-describedby="emailHelp" name="search" placeholder="search..">
+        </div>
+      </div>
+  </div>
+  <div class="col-6">
     <a href="{{ route('home.create') }}" type="button" class="btn btn-primary float-end btn-lg" style="width: 10rem">Add Item</a>        
   </div>
 </div>
 <div class="card mt-4">
     <div class="card-body">
       <div class="row">
-        <div class="col-6">
-          <h5 class="card-title mb-4" style="width: 20rem">Tabel Elektronik</h5>
-        </div>
-        <div class="col-6">
+        <div class="float-end">
           @if(request()->get('status') == 'archived')
             <a href="/home" class="nav-link float-end" >Back</a>
           @else
@@ -38,9 +46,18 @@
               <tr>
                 <th scope="col">No</th>
                 <th scope="col">Kode Barang</th>
-                <th scope="col">Nama Barang</th>
+                <th class="d-flex align-items-center" scope="col">
+                  Nama Barang 
+                  <div class="d-flex flex-column">
+                    <a href="/home?sort=asc&by=nama_barang"  style="width: 10px;height: 10px; cursor:pointer"><i class="material-icons-round">arrow_drop_up</i></a>
+                    <a href="/home?sort=desc&by=nama_barang" style="cursor:pointer;width: 18px;height: 18px;"><i class="material-icons-round">arrow_drop_down</i></a>
+                    
+                  </div>
+                </th>
+                <th scope="col">Tipe</th>
                 <th scope="col">Stock</th>
                 <th scope="col">Harga</th>
+                <th scope="col">Total Aset</th>
                 <th scope="col">Aksi</th>
               </tr>
             </thead>
@@ -50,8 +67,12 @@
                 <th scope="row">{{ $loop -> iteration }}</th>
                 <td>{{ $item -> kode_barang }}</td>
                 <td>{{ $item -> nama_barang }}</td>
+                <td>{{ $item -> itemTypes-> name }}</td>
+                {{-- <td>{{ $item -> jenis }}</td> --}}
                 <td>{{ $item -> stock }}</td>
                 <td>{{ $item -> harga }}</td>
+                {{-- <td>{{ $item -> total_aset }}</td> --}}
+                <td>{{ $item -> stock * $item -> harga }}</td>
                 <td>
                   @if(request()->get('status') == 'archived')
                     <form action="{{ route('home.restore', $item->id) }}" method="post" class="d-inline">
@@ -81,6 +102,7 @@
               @endforeach
             </tbody>
           </table>
+          {{ $items -> links() }}
     </div>
   </div>
 @endsection
